@@ -1,0 +1,22 @@
+class ProjectList(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        projects = Project.objects.filter(user=request.user.id)
+        serializer = ProjectSerializer(projects)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+ def get(self, request, pk, format=None):
+        print(pk, request.data)
+        return Response({"message": "Operation successfully"})
+
+
+    def post(self, request):
+        data = request.data
+        data["user"] = request.user.id  # User.objects.get(pk=)
+        serializer = ProjectSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_200_OK)
